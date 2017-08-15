@@ -28,7 +28,7 @@ class GuiCrossControl(object):
     def check_control_entries(self, lines):
         """Sets the method to open and close lines"""
 
-        if self.traffic_light == 1:
+        if GuiConstants.USE_TRAFFIC_LIGHT == 1:
             self.light_control(lines)
         else:
             self.order_control(lines)
@@ -182,7 +182,7 @@ class GuiCrossControl(object):
         for current_car in self.carlines[direction]:
             if current_car.status == CONTROLLED:
                 arrive_time = round(distance_rects(current_car.rect, self.cross.crossrect)/10)
-                print('car: %d, arrive: %d', current_car.ident, arrive_time)
+                #print('car: %d, arrive: %d', current_car.ident, arrive_time)
 
                 data.add_car(Car(car_counter, line_id, arrive_time))
                 car_counter += 1

@@ -11,7 +11,8 @@ class GuiCar(pygame.sprite.Sprite):
     def __init__(self, ident, vector, inipos, type, is_block = False):
         pygame.sprite.Sprite.__init__(self)
         self.ident = ident
-        self.speed = 20
+        #Original 20
+        self.speed = 15
 
         if is_block:
             self.speed = 0
@@ -21,7 +22,8 @@ class GuiCar(pygame.sprite.Sprite):
 
         self.accl = 0
         self.status = FREE_ROAD
-        self.idm_model = IDMModel(20, 1.4, 3, 1, 2)
+        #Original self.idm_model = IDMModel(self.speed, 1.4, 3, 1, 2)
+        self.idm_model = IDMModel(self.speed, 1.4, 3, 0.5, 0.5)
         self.is_block = is_block
 
         imgrot = 0

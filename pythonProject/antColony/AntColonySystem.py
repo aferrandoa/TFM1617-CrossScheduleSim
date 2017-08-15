@@ -54,9 +54,9 @@ class AntColonySystem(object):
             self.best_solution_value = self.ant_status[best_ant_id].current_solution_value
             self.global_pheromone_update(best_ant_id)
 
-            print 'Best solution in iteration %d' % current_iteration
-            print 'PATH: %s' % self.best_solution
-            print 'LENGTH: %s' % self.best_solution_value
+            #print 'Best solution in iteration %d' % current_iteration
+            #print 'PATH: %s' % self.best_solution
+            #print 'LENGTH: %s' % self.best_solution_value
 
             self.initialize_ants()
 

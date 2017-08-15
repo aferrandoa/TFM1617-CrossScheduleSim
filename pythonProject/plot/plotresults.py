@@ -33,13 +33,15 @@ def main():
 
     if mode == 'Change':
         loadaxes_chg()
+        plt.xlabel('Parameter changes')
     elif mode == 'Cars Num':
         loadaxes_carnum()
+        plt.xlabel('Cars interval')
     else:
         loadaxes_time()
+        plt.xlabel('Time interval')
         
     plt.ylabel('Average wait time')
-    plt.xlabel('Parameter changes')
     #plt.xlabel(changelabels)
 
     axnext = plt.axes([0.05, 0.9, 0.1, 0.05])

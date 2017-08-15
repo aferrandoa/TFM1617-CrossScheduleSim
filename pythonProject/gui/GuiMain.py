@@ -21,6 +21,15 @@ def toggle_run_control():
     else:
         GuiConstants.RUN_CONTROL = 1
 
+def toggle_trlight(toggle_in):
+    """Change toggle traffic light"""
+    if toggle_in.value:
+        GuiConstants.USE_TRAFFIC_LIGHT = 1
+    else:
+        GuiConstants.USE_TRAFFIC_LIGHT = 0
+        
+    log_constant_change('TR_LIGHT', toggle_in.value)
+
 def chg_ant_number(sliderin, labelin):
     """Change ant number callback"""
     GuiConstants.ANT_NUMBER = sliderin.value
@@ -57,10 +66,22 @@ def chg_b_value(sliderin, labelin):
     labelin.value = str(GuiConstants.B_VALUE)
     log_constant_change('B_VALUE', GuiConstants.B_VALUE)
 
+def chg_interval(sliderin, labelin):
+    """Change the interval callback"""
+    GuiConstants.INTERVAL = sliderin.value * 1000
+    labelin.value = str(sliderin.value)
+    log_constant_change('INTERVAL', GuiConstants.INTERVAL)
+
+def chg_random_value(sliderin, labelin):
+    """Change random rate callback"""
+    GuiConstants.RANDOM_RATE = sliderin.value / 10.0
+    labelin.value = str(GuiConstants.RANDOM_RATE)
+    log_constant_change('RANDOM_V', GuiConstants.RANDOM_RATE)
+
 def main():
     """Main function"""
     current_id = 0
-    size = width, height = 800, 600
+    size = width, height = 1024, 768
     green = (0, 250, 0)
     fps = 30
     timewarp = 1.0
@@ -83,7 +104,7 @@ def main():
     pygame.display.flip()
 
     #Init lines
-    lines = ini_lines()
+    lines = ini_lines(width, height)
 
     #Init crossroad and controller
     crossroad = GuiCross((width / 2.0, height / 2.0))
@@ -135,13 +156,13 @@ def main():
         appgui.update()
         pygame.display.flip()
 
-def ini_lines():
+def ini_lines(width, height):
     """Initialize the lines"""
     lines = []
-    lines.append(GuiLine('N', 600, (400, 0)))
-    lines.append(GuiLine('S', 600, (400 - LINE_WIDTH, 0)))
-    lines.append(GuiLine('E', 800, (0, 300)))
-    lines.append(GuiLine('W', 800, (0, 300 - LINE_WIDTH)))
+    lines.append(GuiLine('N', height, (width / 2.0, 0)))
+    lines.append(GuiLine('S', height, ((width / 2.0) - LINE_WIDTH, 0)))
+    lines.append(GuiLine('E', width, (0, height / 2.0)))
+    lines.append(GuiLine('W', width, (0, (height / 2.0) - LINE_WIDTH)))
 
     return lines
 
@@ -157,7 +178,7 @@ def check_add_car_random(lines, current_id):
     """Random car adder"""
     chk_car = random.random()
 
-    if chk_car > 0.7:
+    if chk_car > GuiConstants.RANDOM_RATE:
         select_line = random.random()
 
         if select_line > 0.75:
@@ -224,18 +245,29 @@ def ini_gui():
     btn_run = gui.Button("STOP/RUN")
     btn_run.connect(gui.CLICK, toggle_run_control)
     gui_table.td(btn_run)
-    #GUI iterations number slider
-    create_slider(gui_table, "Iterations number: ", GuiConstants.ITERATIONS_NUMBER, chg_iter_number, 5, 50)
-    #GUI ants number slider
-    create_slider(gui_table, "Ants number: ", GuiConstants.ANT_NUMBER, chg_ant_number, 5, 25)
-    #GUI q value slider
-    create_slider(gui_table, "q value: ", GuiConstants.Q_VALUE, chg_q_value, 0, 9, 10)
-    #GUI a value slider
-    create_slider(gui_table, "a value: ", GuiConstants.A_VALUE, chg_a_value, 0, 9, 10)
-    #GUI p value slider
-    create_slider(gui_table, "p value: ", GuiConstants.P_VALUE, chg_p_value, 0, 9, 10)
-    #GUI b value slider
-    create_slider(gui_table, "b value: ", GuiConstants.B_VALUE, chg_p_value, 0, 5)
+
+    create_check(gui_table, "Traffic light", toggle_trlight)
+
+    if GuiConstants.USE_TRAFFIC_LIGHT == 0:
+        #GUI iterations number slider
+        create_slider(gui_table, "Iterations number: ", GuiConstants.ITERATIONS_NUMBER, chg_iter_number, 5, 50)
+        #GUI ants number slider
+        create_slider(gui_table, "Ants number: ", GuiConstants.ANT_NUMBER, chg_ant_number, 5, 25)
+        #GUI q value slider
+        create_slider(gui_table, "q value: ", GuiConstants.Q_VALUE, chg_q_value, 0, 9, 10)
+        #GUI a value slider
+        create_slider(gui_table, "a value: ", GuiConstants.A_VALUE, chg_a_value, 0, 9, 10)
+        #GUI p value slider
+        create_slider(gui_table, "p value: ", GuiConstants.P_VALUE, chg_p_value, 0, 9, 10)
+        #GUI b value slider
+        create_slider(gui_table, "b value: ", GuiConstants.B_VALUE, chg_p_value, 0, 5)
+    else:
+        #Traffic light interval
+        create_slider(gui_table, "Interval: ", GuiConstants.INTERVAL / 1000, chg_interval, 1, 20)
+
+    #RANDOM RATE SLIDER
+    create_slider(gui_table, "Car frecuency: ", GuiConstants.RANDOM_RATE, chg_random_value, 0, 9, 10)
+
     #Add table to GUI
     gui_container.add(gui_table, 0, 0)
     appgui.init(gui_container)
@@ -243,7 +275,7 @@ def ini_gui():
     return appgui
 
 def create_slider(gui_table, ctrl_label, ctrl_value, ctrl_callback, ctrl_min, ctrl_max, ctrl_mult = 1):
-    """Created an slider to control a value"""
+    """Creates a slider to control a value"""
     gui_table.tr()
     gui_table.td(gui.Label(ctrl_label))
     txt = gui.Input(value=str(ctrl_value), width=30)
@@ -251,6 +283,16 @@ def create_slider(gui_table, ctrl_label, ctrl_value, ctrl_callback, ctrl_min, ct
     slider = gui.HSlider(value=ctrl_value * ctrl_mult, min=ctrl_min, max=ctrl_max, size=20, width=120)
     slider.connect(gui.CHANGE, ctrl_callback, slider, txt)
     gui_table.td(slider)
+
+def create_check(gui_table, ctrl_label, ctrl_callback):
+    """Creates a checkbox to control a value"""
+
+    cb1 = gui.Switch()
+    cb1.connect(gui.CHANGE, ctrl_callback, cb1)
+    cb1l = gui.Label(ctrl_label)
+    gui_table.add(cb1)
+    gui_table.add(cb1l)
+    gui_table.tr()
 
 if __name__ == '__main__':
     main()
