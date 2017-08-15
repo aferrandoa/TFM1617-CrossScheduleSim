@@ -23,7 +23,7 @@ class GuiCar(pygame.sprite.Sprite):
         self.accl = 0
         self.status = FREE_ROAD
         #Original self.idm_model = IDMModel(self.speed, 1.4, 3, 1, 2)
-        self.idm_model = IDMModel(self.speed, 1.4, 3, 0.5, 0.5)
+        self.idm_model = IDMModel(self.speed, 1.4, 3.5, 2, 3)
         self.is_block = is_block
 
         imgrot = 0

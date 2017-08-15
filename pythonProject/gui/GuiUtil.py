@@ -6,7 +6,7 @@ from GuiConstants import *
 
 def load_png(name):
     """ Load image and return image object"""
-    fullname = os.path.join('C:\Users\\albon\Documents\TFM2016-17\pythonProject\gui', name)
+    fullname = os.path.join('.', name)
     try:
         image = pygame.image.load(fullname)
         if image.get_alpha() is None:

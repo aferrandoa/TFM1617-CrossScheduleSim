@@ -21,7 +21,7 @@ class GuiCrossControl(object):
         self.clock = pygame.time.Clock()
         self.last_check_time = pygame.time.get_ticks()
         self.solution = None
-        self.carscrossing = 0
+        self.carscrossing = []
         self.traffic_light = GuiConstants.USE_TRAFFIC_LIGHT
         self.light_direction = 'V'
 
@@ -64,7 +64,7 @@ class GuiCrossControl(object):
                 if (current_car.status == CONTROLLED and
                         self.cross.crossrect.colliderect(current_car.rect)):
                     current_car.status = CROSSING
-                    self.carscrossing += 1
+                    self.carscrossing.append(current_car)
                     continue
 
                 #CROSSING TO OUT
@@ -76,7 +76,7 @@ class GuiCrossControl(object):
                     GuiConstants.LOGSFILE.flush()
                     os.fsync(GuiConstants.LOGSFILE.fileno())
                     self.carlines[current_line.direction].remove(current_car)
-                    self.carscrossing -= 1
+                    self.carscrossing.remove(current_car)
                     continue
        
         self.close_all_lines(lines)
@@ -130,9 +130,9 @@ class GuiCrossControl(object):
                 if (current_car.status == CONTROLLED and
                         self.cross.crossrect.colliderect(current_car.rect)):
                     current_car.status = CROSSING
-                    self.carscrossing += 1
+                    self.carscrossing.append(current_car)
                     self.close_all_lines(lines)
-                    self.check_next_car(current_car, lines)
+                    self.solution.remove(self.solution[0])
                     continue
 
                 #CROSSING TO OUT
@@ -144,15 +144,16 @@ class GuiCrossControl(object):
                     GuiConstants.LOGSFILE.flush()
                     os.fsync(GuiConstants.LOGSFILE.fileno())
                     self.carlines[current_line.direction].remove(current_car)
-                    self.carscrossing -= 1
-                    self.check_next_car(current_car, lines)
+                    self.carscrossing.remove(current_car)
                     continue
 
         if recalculate:
             data = self.prepare_data()
             self.close_all_lines(lines)
             self.solution = self.calculate_order(data)
-            self.start_control(lines)
+            #self.start_control(lines)
+
+        self.check_next_car(lines)
 
     def prepare_data(self):
         """Prepares data for the ant colony"""
@@ -253,27 +254,29 @@ class GuiCrossControl(object):
                     next_line.remove_block_car()
                     self.solution.remove(next_car)
 
-    def check_next_car(self, current_car, lines):
+    def check_next_car(self, lines):
         """Checks if next car can cross"""
+
+        if self.solution is None:
+            return
 
         rest_cars = len(self.solution)
 
         if rest_cars == 0:
             self.open_all_lines(lines)
-        elif rest_cars > 0:
-            next_car = self.solution[0]
-            current_line = self.get_line_from_car(self.get_line_id_from_dir(current_car.direction), lines)
-            next_line = self.get_line_from_car(next_car.line_id, lines)
+        else:
+            car_to_cross = self.solution[0]
+            next_line = self.get_line_from_car(car_to_cross.line_id, lines)
+            cars_crossing_nbr = len(self.carscrossing)
 
-            if self.carscrossing == 0:
-                #There aren't cars crossing, next line opens without check
-                next_line.remove_block_car()
-                self.solution.remove(next_car)
-            else:
-                #Some car is crossing, only non conflict cars can cross
-                if next_line.direction == current_line.direction or next_line.direction in self.non_conflict[current_line.direction]:
+            if cars_crossing_nbr > 0:
+                last_car_crossing = self.carscrossing[cars_crossing_nbr - 1]
+                line_crossing = self.get_line_from_car(self.get_line_id_from_dir(last_car_crossing.direction), lines)
+                
+                if next_line.direction == line_crossing.direction or next_line.direction in self.non_conflict[line_crossing.direction]:
                     next_line.remove_block_car()
-                    self.solution.remove(next_car)
+            else:
+                next_line.remove_block_car()
 
     def get_line_id_from_dir(self, direction):
         """Gets the line id from the direction"""
