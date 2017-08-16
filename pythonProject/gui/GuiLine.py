@@ -47,12 +47,12 @@ class GuiLine(pygame.sprite.Sprite):
 
         if self.direction == 'N':
             move_params = (90, -1)
-            position = (posx, posy + self.length)
+            position = (posx, posy + self.length - CAR_LENGTH)
         elif self.direction == 'S':
             move_params = (90, 1)
         elif self.direction == 'W':
             move_params = (0, -1)
-            position = (posx + self.length, posy)
+            position = (posx + self.length - CAR_LENGTH, posy)
         elif self.direction == 'E':
             move_params = (0, 1)
 
@@ -117,13 +117,14 @@ class GuiLine(pygame.sprite.Sprite):
                     remove = True
             if self.direction =="""
 
-        screen = pygame.display.get_surface()
-        screenrect = screen.get_rect()
         contained_cars = []
 
         for current in self.cars:
-            if screenrect.colliderect(current.rect):
+            if self.rect.colliderect(current.rect):
                 contained_cars.append(current)
+            else:
+                event = pygame.event.Event(pygame.USEREVENT, code="CAR_EXIT", car = current)
+                pygame.event.post(event)
 
         self.cars = contained_cars
 
