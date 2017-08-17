@@ -18,7 +18,7 @@ def update_radio(event):
     """Updates the plot"""
     global mode
     mode = event
-    print mode
+    #print mode
     plt.clf()
     main()
 
@@ -82,7 +82,7 @@ def loadaxes_chg():
         #INI PARAMETERS LINES
         if endini == 0:
             if currentline.startswith('INI'):
-                print currentline
+                #print currentline
                 continue
             else:
                 endini = 1
@@ -90,7 +90,7 @@ def loadaxes_chg():
         #VALUES LINES
         if currentline.startswith('CHANGE'):
             if counter > 0:
-                print currentline
+                #print currentline
                 waittimes.append(acum / counter)
                 changescount += 1
                 changes.append(changescount)
@@ -127,7 +127,7 @@ def loadaxes_carnum(filename, color):
         #INI PARAMETERS LINES
         if endini == 0:
             if currentline.startswith('INI'):
-                print currentline
+                #print currentline
                 continue
             else:
                 endini = 1
@@ -172,7 +172,7 @@ def loadaxes_time(filename, color):
         #INI PARAMETERS LINES
         if endini == 0:
             if currentline.startswith('INI'):
-                print currentline
+                #print currentline
                 continue
             else:
                 endini = 1
@@ -186,7 +186,7 @@ def loadaxes_time(filename, color):
             if current_period != last_period:
 
                 period_diff = current_period - last_period
-                print current_period
+                #print current_period
                 if period_diff > 1:
                     for missed_per in range(int(last_period) + 1, int(current_period)):
                         changescount+=1
