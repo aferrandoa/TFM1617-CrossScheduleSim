@@ -8,7 +8,7 @@ from GuiIdmModel import *
 class GuiCar(pygame.sprite.Sprite):
     """Crossroad representation"""
 
-    def __init__(self, ident, vector, inipos, type, is_block = False):
+    def __init__(self, ident, vector, inipos, type, is_block = False, copied_car = None):
         pygame.sprite.Sprite.__init__(self)
         self.ident = ident
         #Original 20
@@ -45,8 +45,12 @@ class GuiCar(pygame.sprite.Sprite):
         self.vector = vector
         self.carsprite = pygame.sprite.RenderPlain(self)
 
-        self.control_clock = pygame.time.Clock()
-        self.entry_time = pygame.time.get_ticks()
+        if copied_car is not None:
+            self.control_clock = copied_car.control_clock
+            self.entry_time = copied_car.entry_time
+        else:
+            self.control_clock = pygame.time.Clock()
+            self.entry_time = pygame.time.get_ticks()
 
     def update(self, lead_car, timespend):
         """Update position"""

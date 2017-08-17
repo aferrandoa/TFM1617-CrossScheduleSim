@@ -56,7 +56,7 @@ class GuiCrossControl(object):
                 if (current_car.status == FREE_ROAD and
                         collide_rect.colliderect(current_car.rect)):
                     current_car.status = CONTROLLED
-                    current_car.tickcarclock()
+                    #current_car.tickcarclock()
                     self.carlines[current_line.direction].append(current_car)
                     continue
 
@@ -71,8 +71,8 @@ class GuiCrossControl(object):
                 if (current_car.status == CROSSING and
                         not self.cross.crossrect.colliderect(current_car.rect)):
                     current_car.status = OUT
-                    timespent = current_car.tickcarclock()
-                    GuiConstants.LOGSFILE.write(str(current_car.ident) + ':' + str(timespent) + ':' + str(current_car.entry_time) + '\n')
+                    #timespent = current_car.tickcarclock()
+                    #GuiConstants.LOGSFILE.write(str(current_car.ident) + ':' + str(timespent) + ':' + str(current_car.entry_time) + ':' + current_line.direction + '\n')
                     GuiConstants.LOGSFILE.flush()
                     os.fsync(GuiConstants.LOGSFILE.fileno())
                     self.carlines[current_line.direction].remove(current_car)
@@ -121,7 +121,7 @@ class GuiCrossControl(object):
                 if (current_car.status == FREE_ROAD and
                         collide_rect.colliderect(current_car.rect)):
                     current_car.status = CONTROLLED
-                    current_car.tickcarclock()
+                    #current_car.tickcarclock()
                     self.carlines[current_line.direction].append(current_car)
                     recalculate = True
                     continue
@@ -139,8 +139,8 @@ class GuiCrossControl(object):
                 if (current_car.status == CROSSING and
                         not self.cross.crossrect.colliderect(current_car.rect)):
                     current_car.status = OUT
-                    timespent = current_car.tickcarclock()
-                    GuiConstants.LOGSFILE.write(str(current_car.ident) + ':' + str(timespent) + ':' + str(current_car.entry_time) + ':' + current_line.direction + '\n')
+                    #timespent = current_car.tickcarclock()
+                    #GuiConstants.LOGSFILE.write(str(current_car.ident) + ':' + str(timespent) + ':' + str(current_car.entry_time) + ':' + current_line.direction + '\n')
                     GuiConstants.LOGSFILE.flush()
                     os.fsync(GuiConstants.LOGSFILE.fileno())
                     self.carlines[current_line.direction].remove(current_car)

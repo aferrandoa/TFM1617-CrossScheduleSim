@@ -122,6 +122,8 @@ def main():
             if event.type == pygame.QUIT:
                 GuiConstants.LOGSFILE.close()
                 return
+            if event.type == pygame.USEREVENT:
+                add_car_event([lines], event.car)
             else:
                 appgui.event(event)
 
@@ -232,6 +234,19 @@ def check_add_car_time(lines, current_id):
             GuiConstants.CURRENT_LINE += 1
 
     return 0
+
+def add_car_event(group_lines, car_inn):
+    """Checks if an exit car is in the cars queue and adds it if needed"""
+
+    for group in group_lines:
+        for current_line in group:
+            if current_line.rect.colliderect(car_inn.rect):
+                current_line.add_car(car_inn.ident, car_inn)
+                return
+
+    #If the code reaches this line, the car is out
+    timespent = car_inn.tickcarclock()
+    GuiConstants.LOGSFILE.write(str(car_inn.ident) + ':' + str(timespent) + ':' + str(car_inn.entry_time) + ':' + car_inn.direction + '\n')
 
 def ini_gui():
     """Initalizes GUI controls"""

@@ -261,8 +261,11 @@ def add_car_event(group_lines, car_inn):
         for current_line in group:
             if current_line.rect.colliderect(car_inn.rect):
                 current_line.add_car(car_inn)
-                break
+                return
 
+    #If the code reaches this line, the car is out
+    timespent = car_inn.tickcarclock()
+    GuiConstants.LOGSFILE.write(str(car_inn.ident) + ':' + str(timespent) + ':' + str(car_inn.entry_time) + ':' + car_inn.direction + '\n')
 
 def ini_gui():
     """Initalizes GUI controls"""

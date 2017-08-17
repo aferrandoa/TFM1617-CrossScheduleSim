@@ -35,10 +35,12 @@ def main():
         loadaxes_chg()
         plt.xlabel('Parameter changes')
     elif mode == 'Cars Num':
-        loadaxes_carnum()
+        loadaxes_carnum('./gui/experiments/LOGS_REP.out', 'b')
+        loadaxes_carnum('./gui/experiments/LOGS.out', 'r')
         plt.xlabel('Cars interval')
     else:
-        loadaxes_time()
+        loadaxes_time('./gui/experiments/LOGS_REP.out', 'b')
+        loadaxes_time('./gui/experiments/LOGS.out', 'r')
         plt.xlabel('Time interval')
         
     plt.ylabel('Average wait time')
@@ -104,13 +106,12 @@ def loadaxes_chg():
         changescount += 1
         changes.append(changescount)
 
-    plt.plot(changes, waittimes, 'ro')
+    plt.plot(changes, waittimes, 'r')
     plt.xticks(changes)
 
-def loadaxes_carnum():
+def loadaxes_carnum(filename, color):
     """Loads the plotaxes"""
 
-    filename = './gui/experiments/LOGS.out'
     endini = 0
     acum = 0.0
     counter = 0
@@ -149,13 +150,12 @@ def loadaxes_carnum():
         changescount += 1
         changes.append(changescount)
 
-    plt.plot(changes, waittimes, 'ro')
+    plt.plot(changes, waittimes, color)
     plt.xticks(changes)
 
-def loadaxes_time():
+def loadaxes_time(filename, color):
     """Loads the plotaxes"""
 
-    filename = './gui/experiments/LOGS.out'
     endini = 0
     acum = 0.0
     counter = 0
@@ -180,10 +180,19 @@ def loadaxes_time():
         #VALUES LINES
         if not currentline.startswith('CHANGE'):
 
-            entrytime = currentline.split(':')[2]
+            entrytime = int(currentline.split(':')[2]) + int(currentline.split(':')[1])
             current_period = int(entrytime) // (interval*1000)
 
             if current_period != last_period:
+
+                period_diff = current_period - last_period
+                print current_period
+                if period_diff > 1:
+                    for missed_per in range(int(last_period) + 1, int(current_period)):
+                        changescount+=1
+                        changes.append(changescount)
+                        waittimes.append(-1)
+
                 last_period = current_period
                 changescount+=1
 
@@ -205,7 +214,7 @@ def loadaxes_time():
         changescount += 1
         changes.append(changescount)
 
-    plt.plot(changes, waittimes, 'ro')
+    plt.plot(changes, waittimes, color)
     plt.xticks(changes)
 
 if __name__ == '__main__':

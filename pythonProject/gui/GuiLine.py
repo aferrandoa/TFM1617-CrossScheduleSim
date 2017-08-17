@@ -1,6 +1,6 @@
 """Line object"""
 import pygame
-from GuiConstants import *
+import GuiConstants
 from GuiCar import *
 
 class GuiLine(pygame.sprite.Sprite):
@@ -38,7 +38,7 @@ class GuiLine(pygame.sprite.Sprite):
             pygame.draw.line(screen, WHITE, self.position, (self.length, posy), 1)
             pygame.draw.line(screen, WHITE, (posx, posy + LINE_WIDTH), (posx + self.length, posy + LINE_WIDTH), 1)
 
-    def add_car(self, ident):
+    def add_car(self, ident, copied_car = None):
         """A car starts driving by the line"""
 
         move_params = (0, 0)
@@ -56,7 +56,7 @@ class GuiLine(pygame.sprite.Sprite):
         elif self.direction == 'E':
             move_params = (0, 1)
 
-        self.cars.append(GuiCar(ident, move_params, position, self.direction))
+        self.cars.append(GuiCar(ident, move_params, position, self.direction, False, copied_car))
 
     def add_block_car(self, position):
         """Adds a block car"""
