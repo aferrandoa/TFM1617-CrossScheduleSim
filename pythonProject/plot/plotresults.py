@@ -35,12 +35,12 @@ def main():
         loadaxes_chg()
         plt.xlabel('Parameter changes')
     elif mode == 'Cars Num':
-        loadaxes_carnum('./gui/experiments/LOGS_REP.out', 'b')
-        loadaxes_carnum('./gui/experiments/LOGS.out', 'r')
+        loadaxes_carnum('./gui/experiments/LOGS_REP.out', 'b', 'solid')
+        loadaxes_carnum('./gui/experiments/LOGS.out', 'r', '--')
         plt.xlabel('Cars interval')
     else:
-        loadaxes_time('./gui/experiments/LOGS_REP.out', 'b')
-        loadaxes_time('./gui/experiments/LOGS.out', 'r')
+        loadaxes_time('./gui/experiments/LOGS_REP.out', 'b', '-')
+        loadaxes_time('./gui/experiments/LOGS.out', 'r', '--')
         plt.xlabel('Time interval')
         
     plt.ylabel('Average wait time')
@@ -109,7 +109,7 @@ def loadaxes_chg():
     plt.plot(changes, waittimes, 'r')
     plt.xticks(changes)
 
-def loadaxes_carnum(filename, color):
+def loadaxes_carnum(filename, color, linemode):
     """Loads the plotaxes"""
 
     endini = 0
@@ -150,10 +150,10 @@ def loadaxes_carnum(filename, color):
         changescount += 1
         changes.append(changescount)
 
-    plt.plot(changes, waittimes, color)
+    plt.plot(changes, waittimes, color = color, linestyle = linemode)
     plt.xticks(changes)
 
-def loadaxes_time(filename, color):
+def loadaxes_time(filename, color, linemode):
     """Loads the plotaxes"""
 
     endini = 0
@@ -214,7 +214,7 @@ def loadaxes_time(filename, color):
         changescount += 1
         changes.append(changescount)
 
-    plt.plot(changes, waittimes, color)
+    plt.plot(changes, waittimes, color = color, linestyle = linemode)
     plt.xticks(changes)
 
 if __name__ == '__main__':
